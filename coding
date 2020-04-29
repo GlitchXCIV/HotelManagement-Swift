@@ -1,0 +1,213 @@
+
+class Hotel {
+    private var name: String
+    var rooms: [Room] = []
+    
+    var cpNameHotel: String {
+        get {
+            return self.name
+        }
+        set(newName) {
+            self.name = newName
+        }
+    }
+    
+    init(_ name: String) {
+        self.name = name
+    }
+    
+    func addRoom(_ room: Room){
+        rooms.append(room)
+    }
+    
+    func printFreeRooms() {
+        for room in rooms {
+            if room.booked == false {
+                print(room.toString())
+            }
+        }
+    }
+    
+    func booking(_ user: User, typeRoom: String)->Bool{
+        let type = typeRoom
+        
+        switch type {
+        case "Singola":
+            for room in rooms {
+                if let itemRoom = room as? SingleRoom {
+                    if itemRoom.booked == false {
+                        guard itemRoom.kitchenette == true else {
+                            room.booked = true
+                            print("Hai prenotato la stanza \(room.cpNumberRoom)")
+                            return true
+                        }
+                    }
+                }
+            }
+            print("Non ci sono camere singole disponibili")
+            return false
+            
+        case "Singola con cucinino":
+            for room in rooms {
+                if let itemRoom = room as? SingleRoom {
+                    if itemRoom.booked == false {
+                        guard itemRoom.kitchenette == false else {
+                            room.booked = true
+                            print("Hai prenotato la stanza \(room.cpNumberRoom)")
+                            return true
+                        }
+                    }
+                }
+            }
+            print("Non ci sono camere singole disponibili")
+            return false
+            
+        case "Doppia":
+            for room in rooms {
+                if let itemRoom = room as? DoubleRoom {
+                    if itemRoom.booked == false {
+                        guard itemRoom.thirdBed == true else {
+                            room.booked = true
+                            print("Hai prenotato la stanza \(room.cpNumberRoom)")
+                            return true
+                        }
+                    }
+                }
+            }
+            print("Non ci sono camere doppie disponibili")
+            return false
+            
+        case "Doppia con terzo letto":
+            for room in rooms {
+                if let itemRoom = room as? DoubleRoom {
+                    if itemRoom.booked == false {
+                        guard itemRoom.thirdBed == false else {
+                            room.booked = true
+                            print("Hai prenotato la stanza \(room.cpNumberRoom)")
+                            return true
+                        }
+                    }
+                }
+            }
+            print("Non ci sono camere doppie con terzo letto disponibili")
+            return false
+            
+        default:
+            print("Non ci sono stanze disponibili per la tua prenotazione")
+            
+        }
+        return false
+    }
+}
+
+class Room {
+    private var numberRoom: String
+    var booked: Bool
+    
+    var cpNumberRoom: String {
+        get {
+            return self.numberRoom
+        }
+        set(newNumberRoom) {
+            self.numberRoom = newNumberRoom
+        }
+    }
+    
+    init(_ numberRoom: String, _ booked: Bool) {
+        self.numberRoom = numberRoom
+        self.booked = booked
+    }
+    func toString(){
+        print("Stanza numero \(self.cpNumberRoom)")
+    }
+}
+class SingleRoom: Room {
+    var kitchenette: Bool
+    
+    init(_ numberRoom: String, _ booked: Bool, _ kitchenette : Bool ) {
+        self.kitchenette = kitchenette
+        super.init(numberRoom, booked)
+    }
+    override func toString() {
+        super.toString()
+        print("è una camera singola la presenza del cucinino risulta \(self.kitchenette)")
+        
+    }
+}
+class DoubleRoom: Room {
+    var thirdBed: Bool
+    
+    init(_ numberRoom: String, _ booked: Bool, _ thirdBed: Bool) {
+        self.thirdBed = thirdBed
+        super.init(numberRoom, booked)
+    }
+    override func toString() {
+        super.toString()
+        print("è una camera doppia la presenza del 3° letto risulta \(self.thirdBed)")
+        
+    }
+}
+
+class User {
+    private var user: String
+    
+    var cpUser: String {
+        get {
+            self.user
+        }
+        set(newUser){
+            self.user = newUser
+        }
+    }
+    
+    init(_ user: String) {
+        self.user = user
+    }
+    func toString() {
+        print("Nome utente:\(self.cpUser)")
+    }
+    
+}
+
+//Instanziamo l'hotel
+var giusyHotel = Hotel("Giusy Hotel")
+//Instanziamo le camere
+var room1 = SingleRoom("001", false, false)
+var room2 = SingleRoom("002", false, true)
+var room3 = DoubleRoom("003", false, false)
+var room4 = DoubleRoom("004", false, true)
+var room5 = SingleRoom("005", false, false)
+//Instanziamo gli utenti
+print("Utenti:")
+var giusy = User("Giusy Giangravè")
+giusy.toString()
+var dario = User("Dario Laganà")
+dario.toString()
+var alessandro = User ("Alessandro Bazzano")
+alessandro.toString()
+//Inseriamo le camere nell'array rooms dell'hotel
+giusyHotel.addRoom(room1)
+giusyHotel.addRoom(room2)
+giusyHotel.addRoom(room3)
+giusyHotel.addRoom(room4)
+giusyHotel.addRoom(room5)
+//Controlliamo le camere disponibili
+print("\nStanze disponibili:")
+giusyHotel.printFreeRooms()
+
+print()
+
+giusyHotel.booking(giusy, typeRoom: "Singola")
+
+giusyHotel.booking(giusy, typeRoom: "Singola con cucinino")
+
+giusyHotel.booking(dario, typeRoom: "Doppia")
+
+giusyHotel.booking(alessandro, typeRoom: "Singola con cucinino")
+
+giusyHotel.booking(giusy, typeRoom: "Doppia")
+
+print("\nStanze disponibili:")
+giusyHotel.printFreeRooms()
+
+
